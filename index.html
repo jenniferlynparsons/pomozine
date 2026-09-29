@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>pomozine</title>
+  <meta name="description" content="A cut-and-paste pomodoro timer with brown noise, fireplace, and rain.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-phase="idle">
+
+  <!-- roughens the edges of paper scraps so they look hand-cut -->
+  <svg class="defs" aria-hidden="true" focusable="false">
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="9"/>
+    </filter>
+  </svg>
+
+  <main class="zine">
+
+    <header class="masthead">
+      <h1 class="ransom" aria-label="Pomozine">
+        <span aria-hidden="true">P</span><span aria-hidden="true">O</span><span aria-hidden="true">M</span><span aria-hidden="true">O</span><span aria-hidden="true">Z</span><span aria-hidden="true">I</span><span aria-hidden="true">N</span><span aria-hidden="true">E</span>
+      </h1>
+      <p class="issue">issue #1 &middot; a cut-and-paste focus timer &middot; free, take one</p>
+    </header>
+
+    <!-- THE TIMER -->
+    <section class="timer-card torn" aria-labelledby="phaseLabel">
+      <div class="stamp" id="phaseLabel">ready</div>
+      <div class="clock" id="clock" role="timer" aria-live="off">15:00</div>
+      <p class="cycle" id="cycleLabel">open-ended</p>
+      <p class="tagline" id="tagline" aria-live="polite">set it up below, then hit start.</p>
+
+      <div class="strip" id="strip" aria-hidden="true"></div>
+
+      <div class="controls">
+        <button type="button" class="btn big" id="startBtn">start</button>
+        <button type="button" class="btn big" id="pauseBtn" hidden>pause</button>
+        <button type="button" class="btn" id="skipBtn" hidden>skip &rarr;</button>
+        <button type="button" class="btn ghost" id="stopBtn" hidden>stop</button>
+      </div>
+      <p class="hint">space bar = start / pause</p>
+    </section>
+
+    <div class="grid">
+
+      <!-- 1. NOISE -->
+      <section class="scrap" style="--tilt:-1.2deg">
+        <h2><span class="num">1</span> pick yr noise</h2>
+        <!-- buttons are made from the files in sounds/ -->
+        <div class="chips" role="radiogroup" aria-label="Background noise" id="noiseChips"></div>
+        <div class="row">
+          <label for="volume" class="small">volume</label>
+          <input type="range" id="volume" min="0" max="1" step="0.01">
+          <button type="button" class="mini" id="hearNoise">&#9654; hear it</button>
+        </div>
+        <p class="note">plays during focus. goes quiet on breaks.</p>
+      </section>
+
+      <!-- 2. LENGTHS -->
+      <section class="scrap" style="--tilt:1deg">
+        <h2><span class="num">2</span> how long</h2>
+        <fieldset class="lock" id="lengthFields">
+          <p class="small">focus</p>
+          <div class="chips" role="radiogroup" aria-label="Focus length">
+            <label class="chip"><input type="radio" name="focus" value="10"><span>10 min</span></label>
+            <label class="chip"><input type="radio" name="focus" value="15"><span>15 min</span></label>
+            <label class="chip"><input type="radio" name="focus" value="20"><span>20 min</span></label>
+          </div>
+          <p class="small spaced">break</p>
+          <div class="chips" role="radiogroup" aria-label="Break length">
+            <label class="chip"><input type="radio" name="brk" value="10"><span>10 min</span></label>
+            <label class="chip"><input type="radio" name="brk" value="20"><span>20 min</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- 3. BELL -->
+      <section class="scrap" style="--tilt:-0.6deg">
+        <h2><span class="num">3</span> pick yr bell</h2>
+        <div class="chips" role="radiogroup" aria-label="Transition sound" id="bellChips"></div>
+        <div class="row">
+          <button type="button" class="mini" id="hearBell">&#9654; hear it</button>
+        </div>
+        <p class="note">rings when focus &amp; break swap. rings extra at the very end.</p>
+      </section>
+
+      <!-- 4. PLANNER -->
+      <section class="scrap wide" style="--tilt:0.5deg">
+        <h2><span class="num">4</span> how much time u got?</h2>
+        <fieldset class="lock" id="planFields">
+          <div class="chips" role="radiogroup" aria-label="How to enter your time">
+            <label class="chip"><input type="radio" name="timeMode" value="minutes"><span>minutes</span></label>
+            <label class="chip"><input type="radio" name="timeMode" value="until"><span>until a time</span></label>
+          </div>
+          <div class="row">
+            <span id="minutesWrap">
+              <label for="minutes" class="small">i have</label>
+              <input type="number" id="minutes" min="0" max="720" step="5" inputmode="numeric" placeholder="90">
+              <span class="small">min</span>
+            </span>
+            <span id="untilWrap" hidden>
+              <label for="until" class="small">i'm free until</label>
+              <input type="time" id="until">
+            </span>
+            <button type="button" class="mini" id="clearTime">clear</button>
+          </div>
+        </fieldset>
+        <p class="plan" id="planText" aria-live="polite"></p>
+        <div class="suggest" id="suggest" hidden>
+          <span id="suggestText"></span>
+          <button type="button" class="mini" id="useSuggest">use this</button>
+        </div>
+      </section>
+
+      <!-- 5. EXTRAS -->
+      <section class="scrap" style="--tilt:-1.5deg">
+        <h2><span class="num">5</span> extras</h2>
+        <label class="check"><input type="checkbox" id="notify"> <span>pop-up when it switches</span></label>
+        <p class="note" id="notifyNote">handy if your sound is muted. your browser will ask once.</p>
+      </section>
+
+    </div>
+
+    <footer class="colophon">
+      <p>no accounts. no tracking. no audio files &mdash; every sound is made live by your browser.</p>
+      <p>xeroxed at the copy shop at 2am &middot; &copy; nobody, share it</p>
+    </footer>
+  </main>
+
+  <!-- SOUNDS: one file each. Add your own below the toolkit (see sounds/_template.js).
+       The order here is the order of the buttons. -->
+  <script src="sounds/_toolkit.js"></script>
+  <script src="sounds/brown-noise.js"></script>
+  <script src="sounds/fireplace.js"></script>
+  <script src="sounds/rain.js"></script>
+  <script src="sounds/mixtape.js"></script>
+  <!-- <script src="sounds/_template.js"></script>   uncomment to try the "ocean" example -->
+  <script src="sounds/singing-bowl.js"></script>
+  <script src="sounds/bright-chime.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
