@@ -2,6 +2,9 @@
 
 A cut-and-paste pomodoro timer with background sounds. Plain HTML, CSS, and JavaScript. No accounts, no tracking, no build step, no audio files.
 
+[Demo](https://jenniferlynparsons.github.io/pomozine/)
+
+
 ---
 
 ## Quick start
