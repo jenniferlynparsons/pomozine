@@ -114,6 +114,8 @@ pomozine/
 └── sounds/
 ```
 
+**GitHub Pages note:** keep the empty `.nojekyll` file. Without it, GitHub Pages hides any file whose name starts with `_` (like `sounds/_toolkit.js`), and the sounds won't load.
+
 Any number of people can use it at once. Each visitor's timer runs entirely in their own browser, so nobody's session affects anyone else's.
 
 ---
